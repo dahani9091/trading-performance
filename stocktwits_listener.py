@@ -4,6 +4,7 @@ import time
 import datetime, pytz, holidays
 from reposter import reposter
 import config
+from sheet_handler import update_sheet
 
 def is_EOD(now = None):
     '''
@@ -84,11 +85,20 @@ if __name__ == '__main__':
         if old_post_body == None:
             old_post_body = new_post_body
         if new_post_body != old_post_body:
+            # repost the post in Mastodon
             print("New post found!")
             print(new_post_body)
-            reposter(new_post_body)
+            try:
+                reposter(new_post_body)
+            except Exception as e:
+                print(f"Error in Reposter: {e}")
             print("Post Reposted")
-            old_post_body = new_post_body
+            #  get the post data
             post_data = parse_post(client, post_json)
+            # update the google sheet
+            values = [post_data['pos'], post_data['side'], post_data['ticker'], post_data['price'], post_data['timestamp'], post_data['bought_price']]
+            update_sheet(values)
             print(post_data)    
+            # update the old posy text
+            old_post_body = new_post_body
         time.sleep(2)

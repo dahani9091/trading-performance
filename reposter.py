@@ -4,7 +4,7 @@ import config
 def reposter(post):
     # Initialize Mastodon client
     mastodon = Mastodon(
-        access_token = "2hdmjp5510Kg_XrWPVgTqgTHnmEvP7l3IK1TyZ2KY2Y",
+        access_token = config.mastodon_access_token,
         api_base_url = "https://arsenalfc.social/"
     )
 
